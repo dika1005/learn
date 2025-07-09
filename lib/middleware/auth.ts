@@ -3,31 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 export async function authMiddleware(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
+  const token = req.cookies.get("token")?.value;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.log("[authMiddleware] Token ga ada atau format salah 😒");
+  if (!token) {
     return NextResponse.json(
-      { message: "Token tidak ditemukan atau format salah" },
+      { message: "Token tidak ditemukan di cookies" },
       { status: 401 }
     );
   }
-  const token = authHeader.split(" ")[1];
-  console.log("[authMiddleware] Extracted token:", token); // Pastikan tokennya benar diekstrak
-
-  // -- TAMBAHKAN INI --
-  console.log(
-    "[authMiddleware] JWT_SECRET used for verification:",
-    process.env.JWT_SECRET
-  );
-  // -- END TAMBAHKAN INI --
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     console.log("[authMiddleware] Token valid:", decoded);
-    // ...
+    // bisa simpan decoded info ke req kalau mau
+    return null; // artinya lanjutkan
   } catch (err) {
-    console.error("[authMiddleware] Token error:", err); // Ini yang kemungkinan besar muncul di log Next.js Anda
+    console.error("[authMiddleware] Token error:", err);
     return NextResponse.json({ message: "Token tidak valid" }, { status: 403 });
   }
 }

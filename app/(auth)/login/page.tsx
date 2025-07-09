@@ -1,6 +1,6 @@
 // app/auth/login/page.tsx
 "use client";
-import { useState, useEffect } from "react"; // Tambahkan useEffect
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -18,60 +18,54 @@ export default function LoginPage() {
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Optional: Validasi kosong
-  if (!email || !password) {
-    alert("Isi email dan password dulu dong! 😤");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert(data.message);
-
-      // ✅ Simpan token & email ke localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userEmail", data.user.email); // <- ini penting buat redirect
-
-      // ✅ Redirect ke halaman utama
-      router.push("/");
-    } else {
-      alert("Gagal login: " + data.message);
+    if (!email || !password) {
+      alert("Email dan password harus diisi.");
+      return;
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    alert("Terjadi kesalahan jaringan atau server.");
-  }
-};
 
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userEmail", data.user.email);
+        router.push("/");
+      } else {
+        alert("Gagal login: " + data.message);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Terjadi kesalahan jaringan atau server.");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 font-sans text-gray-900 dark:text-white">
-      <div className="relative z-10 bg-white dark:bg-gray-800 p-8 md:p-12 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 transform scale-95 hover:scale-100 ease-out max-w-md w-full border border-gray-100 dark:border-gray-700">
-        {/* Background Blob/Shape - Ini hanya contoh, bisa diganti dengan SVG atau elemen dekoratif lainnya */}
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200 dark:bg-purple-800 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-pink-200 dark:bg-pink-800 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-
-        <h2 className="text-4xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 font-sans">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        
+        <h2 className="text-3xl font-bold text-center mb-1 text-gray-800 dark:text-white">
           Selamat Datang Kembali
         </h2>
+        <p className="text-center text-gray-500 dark:text-gray-400 mb-8">
+          Masuk untuk melanjutkan sesi Anda.
+        </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Email
             </label>
@@ -81,7 +75,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@contoh.com"
-              className="w-full px-5 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-200 dark:focus:ring-purple-700 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition duration-200 ease-in-out text-base"
+              className="mt-1 block w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:text-white"
               required
             />
           </div>
@@ -89,46 +83,55 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Kata Sandi
             </label>
-            <div className="relative">
+            <div className="relative mt-1">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min. 8 karakter"
-                className="w-full px-5 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-4 focus:ring-pink-200 dark:focus:ring-pink-700 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition duration-200 ease-in-out text-base pr-12"
+                placeholder="Kata sandi Anda"
+                className="block w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:text-white"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-sm leading-5 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 ease-in-out"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 px-4 flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
               >
-                {showPassword ? "Sembunyikan" : "Tampilkan"}
+                {showPassword ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-bold text-lg hover:from-purple-700 hover:to-pink-700 transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-pink-700"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors"
           >
             Masuk
           </button>
         </form>
 
-        <p className="mt-8 text-center text-gray-600 dark:text-gray-400 text-base">
+        <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Belum punya akun?{" "}
           <Link
             href="/register"
-            className="text-purple-600 dark:text-purple-400 hover:text-pink-600 dark:hover:text-pink-400 hover:underline font-semibold transition-colors duration-200"
+            className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 hover:underline"
           >
-            Daftar Sekarang
+            Daftar di sini
           </Link>
         </p>
       </div>

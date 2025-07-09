@@ -21,20 +21,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Password salah' }, { status: 401 })
     }
 
+    // 🔐 Generate JWT
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: '1h' }
     )
 
-    return NextResponse.json({
+    // 🍪 Simpan token ke cookies
+    const response = NextResponse.json({
       message: 'Login berhasil!',
-      token,
       user: {
         id: user.id,
         email: user.email
       }
-    }, { status: 200 })
+    })
+
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 // 1 jam
+    })
+
+    return response
 
   } catch (error) {
     console.error('[LOGIN ERROR]', error)
