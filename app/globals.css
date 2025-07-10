@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.mask-blob {
+  -webkit-mask-image: url('/blob.svg');
+  mask-image: url('/blob.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain; /* << biar scalable */
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-type: alpha;
+  mask-type: alpha;
+  background-color: white;
+}
+

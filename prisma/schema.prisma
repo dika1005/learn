@@ -21,3 +21,22 @@ model Product {
   price       Float
   createdAt   DateTime @default(now())
 }
+
+model Gallery {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  image       String
+  tags        String[]
+  takenAt     DateTime
+  comments    Comment[]
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      String
+  message   String
+  createdAt DateTime @default(now())
+  galleryId String   @db.ObjectId
+  gallery   Gallery  @relation(fields: [galleryId], references: [id])
+}
