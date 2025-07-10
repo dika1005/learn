@@ -36,14 +36,7 @@ export default function HomePage() {
     }
   }, [router]); // Dependensi router agar useEffect berjalan jika router berubah
 
-  const handleLogout = () => {
-    // Hapus email dari localStorage saat logout
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('userEmail');
-    }
-    alert("Anda telah berhasil logout!"); // Pemberitahuan sederhana
-    router.push('/login'); // Kembali ke halaman login
-  };
+
 
   // Tampilkan loading state saat data sedang diambil atau redirect sedang berlangsung
   if (loading) {
@@ -66,12 +59,6 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-4 sm:mb-0">
           Selamat Datang, {userEmail}!
         </h1>
-        <button
-          onClick={handleLogout}
-          className="px-6 py-2 bg-red-500 text-white rounded-lg font-semibold shadow-md hover:bg-red-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75"
-        >
-          Logout
-        </button>
       </header>
 
       {/* Main Content Area */}
