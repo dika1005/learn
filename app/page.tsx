@@ -10,6 +10,7 @@ import {
   FiLinkedin,
   FiMail,
 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 // Data Proyek (lebih mudah dikelola)
 const projects = [
@@ -33,10 +34,20 @@ const projects = [
 
 export default function PortfolioPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const router = useRouter(); // ⬅️ Inisialisasi router
 
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
-    if (email) setUserEmail(email);
+    const token = localStorage.getItem("token"); // ⬅️ Ambil token
+    if (email) {
+      setUserEmail(email);
+    } else {
+      setUserEmail(null);
+    }
+
+    if (!token) {
+      router.push("/login"); // ⬅️ Redirect ke /login kalau belum login
+    }
   }, []);
 
   // Varian animasi untuk Framer Motion
