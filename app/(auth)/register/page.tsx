@@ -22,7 +22,7 @@ export default function RegisterPage() {
 
             if (res.ok) {
                 alert(data.message);
-                router.push('/login'); // Arahkan ke halaman login setelah register berhasil
+                router.push('/login'); 
             } else {
                 alert("Gagal: " + data.message);
             }
