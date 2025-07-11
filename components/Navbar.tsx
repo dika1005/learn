@@ -52,6 +52,9 @@ export default function Navbar() {
           <Link href="/gallery/upload" className="text-gray-700 dark:text-gray-200 hover:text-blue-500">
             Tambah Foto
           </Link>
+          <Link href="/anime" className="text-gray-700 dark:text-gray-200 hover:text-blue-500">
+            Anime
+          </Link>
           <button
             onClick={handleLogout}
             className="text-red-600 hover:underline font-semibold transition"
