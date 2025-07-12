@@ -42,7 +42,7 @@ export default function Navbar() {
     <nav className="bg-white dark:bg-gray-900 shadow-md px-4 py-5 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline">
-          DikaStore
+          DikaRamadani
         </Link>
 
         <div className="flex items-center gap-6">
@@ -52,9 +52,9 @@ export default function Navbar() {
           <Link href="/gallery/upload" className="text-gray-700 dark:text-gray-200 hover:text-blue-500">
             Tambah Foto
           </Link>
-          <Link href="/anime" className="text-gray-700 dark:text-gray-200 hover:text-blue-500">
+          {/* <Link href="/anime" className="text-gray-700 dark:text-gray-200 hover:text-blue-500">
             Anime
-          </Link>
+          </Link> */}
           <button
             onClick={handleLogout}
             className="text-red-600 hover:underline font-semibold transition"
