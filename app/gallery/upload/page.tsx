@@ -1,9 +1,12 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function UploadGalleryPage() {
   const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -11,6 +14,16 @@ export default function UploadGalleryPage() {
     tags: "",
     takenAt: "",
   });
+
+  useEffect(() => {
+    const email = localStorage.getItem("userEmail");
+    setUserEmail(email);
+
+    if (email !== "dikaramadan6@gmail.com") {
+      alert("Kamu tidak diizinkan mengakses halaman ini!");
+      router.push("/gallery/show");
+    }
+  }, [router]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,6 +56,8 @@ export default function UploadGalleryPage() {
       alert("Gagal upload foto 😭");
     }
   };
+
+  if (userEmail !== "dikaramadan6@gmail.com") return null;
 
   return (
     <div className="max-w-xl mx-auto px-6 py-10">
@@ -99,8 +114,14 @@ export default function UploadGalleryPage() {
 
       {form.image && (
         <div className="mt-6">
-          <p className="text-sm text-gray-500 mb-1">Preview:</p>
-          <img src={form.image} alt="Preview" className="w-full rounded shadow" />
+          <Image
+            src={form.image}
+            alt="Preview"
+            className="w-full rounded shadow"
+            width={800}
+            height={600}
+            style={{ width: "100%", height: "auto" }}
+          />
         </div>
       )}
     </div>

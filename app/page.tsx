@@ -23,38 +23,50 @@ const projects = [
     githubLink: "https://github.com/dikaramadani/posyandu-app",
   },
   {
-    title: "Proyek Keren Lainnya",
+    title: "E-commerse Website toko online sepatu mang kus",
     description:
-      "Deskripsi singkat tentang proyek kedua Anda. Jelaskan tujuan dan teknologi yang digunakan.",
-    image: "/project-placeholder.png", // Gunakan gambar placeholder jika belum ada
-    tags: ["React", "Firebase", "Vercel"],
-    githubLink: "https://github.com/dikaramadani/nama-repo-lain",
+      "Aplikasi e-commerce untuk penjualan sepatu, dibangun menggunakan Laravel dan Tailwind CSS.",
+    image: "/project-toko-sepatu.png", // Ganti dengan path gambar proyek Anda
+    tags: ["Laravel", "Tailwind CSS", "MySQL"],
+    githubLink: "https://github.com/dika1005/templates_mvc",
   },
 ];
 
 export default function PortfolioPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const router = useRouter(); // ⬅️ Inisialisasi router
+  const router = useRouter();
 
   useEffect(() => {
-    const email = localStorage.getItem("userEmail");
-    const token = localStorage.getItem("token"); // ⬅️ Ambil token
-    if (email) {
-      setUserEmail(email);
-    } else {
-      setUserEmail(null);
-    }
+    // Pastikan kode ini hanya berjalan di sisi klien
+    if (typeof window !== "undefined") {
+      const email = localStorage.getItem("userEmail");
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      router.push("/login"); // ⬅️ Redirect ke /login kalau belum login
+      if (email && token) { // Periksa KEDUANYA: email dan token
+        setUserEmail(email);
+      } else {
+        // Jika salah satu (atau keduanya) tidak ada, anggap belum login
+        setUserEmail(null);
+        // Redirect ke halaman login yang benar
+        router.push("/auth/login");
+      }
     }
-  }, []);
+  }, [router]); // Tambahkan router sebagai dependensi
 
   // Varian animasi untuk Framer Motion
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
+
+  // Opsional: Tampilkan loading state atau null jika belum terautentikasi
+  if (userEmail === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans">
@@ -74,9 +86,12 @@ export default function PortfolioPage() {
               Web Developer | Mahasiswa Universitas Kuningan
             </p>
             <p className="mt-4 max-w-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-              Saya adalah seorang pengembang web dengan hasrat untuk menciptakan
-              aplikasi yang fungsional dan modern menggunakan Next.js, MongoDB,
-              dan Tailwind CSS.
+              Hallo, Nama saya Dika Ramadani, seorang web developer yang
+              berfokus pada pengembangan aplikasi web modern dan responsif.
+              Saya memiliki pengalaman dalam menggunakan teknologi seperti Next.js,
+              React, dan Tailwind CSS untuk menciptakan pengalaman pengguna yang
+              menarik dan fungsional.
+              
             </p>
             <div className="mt-8 flex justify-center md:justify-start gap-4">
               <a
@@ -211,16 +226,16 @@ export default function PortfolioPage() {
           </p>
           <div className="flex justify-center flex-wrap gap-6 text-2xl">
             <a
-              href="mailto:dikaramadani@example.com"
+              href="mailto:dikabangkok21@gmail.com"
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               <FiMail />
               <span className="text-base font-medium">
-                dikaramadani@example.com
+              dikabangkok21@gmail.com
               </span>
             </a>
             <a
-              href="https://github.com/dikaramadani"
+              href="https://github.com/dika1005"
               target="_blank"
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
@@ -228,7 +243,7 @@ export default function PortfolioPage() {
               <span className="text-base font-medium">GitHub</span>
             </a>
             <a
-              href="https://linkedin.com/in/dikaramadani"
+              href="https://www.linkedin.com/in/dika-ramadani-41356b340/"
               target="_blank"
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >

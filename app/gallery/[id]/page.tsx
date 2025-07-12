@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 type Comment = {
   id: string;
@@ -41,13 +42,19 @@ export default function GalleryDetailPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">{gallery.title}</h1>
       <p className="text-gray-600 mb-4">{gallery.description}</p>
-
       {gallery.image && (
-        <img
-          src={gallery.image}
-          alt={gallery.title}
-          className="rounded-xl shadow-lg object-cover mb-6 w-full max-h-[500px]"
-        />
+        <div className="rounded-xl shadow-lg object-cover mb-6 w-full max-h-[500px] overflow-hidden relative" style={{ height: "auto", maxHeight: 500 }}>
+          <Image
+            src={gallery.image}
+            alt={gallery.title}
+            layout="responsive"
+            width={800}
+            height={500}
+            className="rounded-xl object-cover"
+            style={{ width: "100%", height: "auto", maxHeight: 500 }}
+            priority
+          />
+        </div>
       )}
 
       <p className="text-sm text-gray-500 mb-6">

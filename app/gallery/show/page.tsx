@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface GalleryItem {
   id: string;
@@ -42,13 +43,15 @@ export default function GalleryPage() {
         {gallery.map((item) => (
           <Link key={item.id} href={`/gallery/${item.id}`}>
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition overflow-hidden cursor-pointer">
-              {item.image && (
-                <img
+                <Image
                   src={item.image}
                   alt={item.title}
+                  width={600}
+                  height={224}
                   className="w-full h-56 object-cover"
+                  style={{ objectFit: "cover" }}
+                  priority={true}
                 />
-              )}
               <div className="p-4">
                 <h2 className="text-lg font-semibold">{item.title}</h2>
                 <p className="text-sm text-gray-500 mb-1">

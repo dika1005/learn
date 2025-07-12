@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     // 🍪 Simpan token ke cookies
     const response = NextResponse.json({
       message: 'Login berhasil!',
+      token,
       user: {
         id: user.id,
         email: user.email

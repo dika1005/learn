@@ -1,16 +1,23 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import jwt from 'jsonwebtoken'
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')?.value;
+  const token = request.cookies.get('token')?.value
 
-  if (!token && request.nextUrl.pathname !== '/login' && request.nextUrl.pathname !== '/register') {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (!token) {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
-  return NextResponse.next();
+  try {
+    jwt.verify(token, process.env.JWT_SECRET!)
+    return NextResponse.next()
+  } catch {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
+  }
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|favicon.ico|login|register).*)'],
-};
+  matcher: ['/dashboard/:path*', '/api/protected-route'],
+}

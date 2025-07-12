@@ -13,6 +13,7 @@ export default function LoginPage() {
   // Redirect jika sudah login
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("userEmail")) {
+      // Pastikan ini mengarah ke halaman utama Anda, misalnya "/"
       router.push("/");
     }
   }, [router]);
@@ -21,6 +22,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     if (!email || !password) {
+      // Ganti alert dengan modal kustom jika memungkinkan
       alert("Email dan password harus diisi.");
       return;
     }
@@ -37,16 +39,20 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok) {
+        // Ganti alert dengan modal kustom jika memungkinkan
         alert(data.message);
         localStorage.setItem("token", data.token);
         localStorage.setItem("userEmail", data.user.email);
-        window.dispatchEvent(new Event("userEmailChanged")); // ⬅️ ini yang bikin navbar ke-trigger ulang
+        window.dispatchEvent(new Event("userEmailChanged")); // Trigger navbar update
+        // Pastikan ini mengarah ke halaman utama Anda, misalnya "/"
         router.push("/");
       } else {
+        // Ganti alert dengan modal kustom jika memungkinkan
         alert("Gagal login: " + data.message);
       }
     } catch (error) {
       console.error("Login error:", error);
+      // Ganti alert dengan modal kustom jika memungkinkan
       alert("Terjadi kesalahan jaringan atau server.");
     }
   };
@@ -102,9 +108,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute inset-y-0 right-0 px-4 flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 aria-label={
-                  showPassword
-                    ? "Sembunyikan kata sandi"
-                    : "Tampilkan kata sandi"
+                  showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"
                 }
               >
                 {showPassword ? (

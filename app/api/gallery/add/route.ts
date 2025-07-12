@@ -20,6 +20,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newGallery, { status: 201 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Gagal menambahkan foto" }, { status: 500 });
   }
 }

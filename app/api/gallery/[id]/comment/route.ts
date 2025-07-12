@@ -1,15 +1,17 @@
+// app/api/gallery/[id]/comment/route.ts
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-// GET KOMENTAR
-export async function GET(
-  request: NextRequest,
-  contextPromise: Promise<{ params: { id: string } }>
-) {
-  const { params } = await contextPromise;
-  const id = params.id;
+// GET komentar
+export async function GET(req: NextRequest) {
+  const urlParts = req.nextUrl.pathname.split("/");
+  const id = urlParts[urlParts.indexOf("gallery") + 1]; // ambil dari /gallery/[id]/comment
+
+  if (!id) {
+    return NextResponse.json({ error: "ID galeri tidak ditemukan" }, { status: 400 });
+  }
 
   try {
     const comments = await prisma.comment.findMany({
@@ -24,19 +26,24 @@ export async function GET(
   }
 }
 
-// POST KOMENTAR
-export async function POST(
-  request: NextRequest,
-  contextPromise: Promise<{ params: { id: string } }>
-) {
-  const { params } = await contextPromise; // WAJIB DI-AWAIT!
-  const galleryId = params.id;
+// POST komentar
+export async function POST(req: NextRequest) {
+  const urlParts = req.nextUrl.pathname.split("/");
+  const id = urlParts[urlParts.indexOf("gallery") + 1]; // ambil dari /gallery/[id]/comment
+
+  if (!id) {
+    return NextResponse.json({ error: "ID galeri tidak ditemukan" }, { status: 400 });
+  }
 
   try {
-    const { user, message } = await request.json();
+    const { user, message } = await req.json();
+
+    if (!user || !message) {
+      return NextResponse.json({ error: "Nama pengguna dan pesan tidak boleh kosong" }, { status: 400 });
+    }
 
     const gallery = await prisma.gallery.findUnique({
-      where: { id: galleryId },
+      where: { id },
     });
 
     if (!gallery) {
@@ -47,9 +54,7 @@ export async function POST(
       data: {
         user,
         message,
-        gallery: {
-          connect: { id: galleryId },
-        },
+        galleryId: id,
       },
     });
 
