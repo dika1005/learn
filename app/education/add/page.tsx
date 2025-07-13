@@ -1,3 +1,4 @@
+// app/education/add/page.tsx
 "use client";
 import EducationForm from "../form";
 import { useRouter } from "next/navigation";
@@ -13,27 +14,29 @@ export default function AddEducationPage() {
   const router = useRouter();
 
   const handleSubmit = async (data: EducationFormData) => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId"); // ambil dari localStorage juga
-
     const payload = {
-      userId, // tambahkan ini
       ...data,
     };
 
-    const res = await fetch("/api/education", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      // >>>>>> UBAH URL FETCH INI <<<<<<
+      const res = await fetch("/api/education/add", { // Ganti dari "/api/education" menjadi "/api/education/add"
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      router.push("/education/list");
-    } else {
-      alert("Gagal menambahkan data!");
+      if (res.ok) {
+        router.push("/education/list");
+      } else {
+        const errorData = await res.json();
+        alert(`Gagal menambahkan data: ${errorData.message || res.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error adding education:", error);
+      alert("Terjadi kesalahan jaringan saat menambahkan data.");
     }
   };
 

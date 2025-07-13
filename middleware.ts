@@ -7,17 +7,17 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
   if (!token) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+    return NextResponse.redirect(new URL('/login', request.url)) // (A)
   }
 
   try {
     jwt.verify(token, process.env.JWT_SECRET!)
-    return NextResponse.next()
+    return NextResponse.next() // (B)
   } catch {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+    return NextResponse.redirect(new URL('/login', request.url)) // (C)
   }
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/api/protected-route'],
+  matcher: ['/dashboard/:path*', '/api/protected-route'], // (D)
 }

@@ -48,7 +48,7 @@ export default function PortfolioPage() {
         // Jika salah satu (atau keduanya) tidak ada, anggap belum login
         setUserEmail(null);
         // Redirect ke halaman login yang benar
-        router.push("/auth/login");
+        router.push("/login");
       }
     }
   }, [router]); // Tambahkan router sebagai dependensi

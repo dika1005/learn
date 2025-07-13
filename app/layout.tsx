@@ -28,7 +28,7 @@ export default function RootLayout({
   const pathname = usePathname(); // Dapatkan jalur URL saat ini
 
   // Definisikan rute di mana navbar tidak akan ditampilkan
-  const noNavbarRoutes = ["/auth/login", "/auth/register"];
+  const noNavbarRoutes = ["/login", "/register"];
 
   // Tentukan apakah navbar harus ditampilkan
   const showNavbar = !noNavbarRoutes.includes(pathname);
