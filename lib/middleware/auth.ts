@@ -1,13 +1,17 @@
-// lib/middleware/auth.ts
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 export async function authMiddleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
+  let token = req.cookies.get("token")?.value;
+
+  // Cek juga dari Authorization header
+  if (!token && req.headers.get("authorization")?.startsWith("Bearer ")) {
+    token = req.headers.get("authorization")?.split(" ")[1];
+  }
 
   if (!token) {
     return NextResponse.json(
-      { message: "Token tidak ditemukan di cookies" },
+      { message: "Token tidak ditemukan" },
       { status: 401 }
     );
   }
@@ -15,8 +19,7 @@ export async function authMiddleware(req: NextRequest) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     console.log("[authMiddleware] Token valid:", decoded);
-    // bisa simpan decoded info ke req kalau mau
-    return null; // artinya lanjutkan
+    return null;
   } catch (err) {
     console.error("[authMiddleware] Token error:", err);
     return NextResponse.json({ message: "Token tidak valid" }, { status: 403 });
