@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function UploadGalleryPage() {
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -15,14 +15,27 @@ export default function UploadGalleryPage() {
     takenAt: "",
   });
 
+  // ✅ Ganti logic admin check
   useEffect(() => {
-    const email = localStorage.getItem("userEmail");
-    setUserEmail(email);
+    const checkAdmin = async () => {
+      try {
+        const res = await fetch("/api/me");
+        if (!res.ok) throw new Error("Unauthorized");
 
-    if (email !== "dikaramadan6@gmail.com") {
-      alert("Kamu tidak diizinkan mengakses halaman ini!");
-      router.push("/gallery/show");
-    }
+        const data = await res.json();
+        if (data.user.email !== "dikaramadan6@gmail.com") {
+          alert("Kamu tidak diizinkan mengakses halaman ini!");
+          router.push("/gallery/show");
+        } else {
+          setChecking(false); // ✔️ Admin valid, boleh akses
+        }
+      } catch {
+        alert("Gagal validasi user. Login dulu ya!");
+        router.push("/login");
+      }
+    };
+
+    checkAdmin();
   }, [router]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +44,7 @@ export default function UploadGalleryPage() {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setForm({ ...form, image: reader.result as string });
+      setForm((prev) => ({ ...prev, image: reader.result as string }));
     };
     reader.readAsDataURL(file);
   };
@@ -57,12 +70,13 @@ export default function UploadGalleryPage() {
     }
   };
 
-  if (userEmail !== "dikaramadan6@gmail.com") return null;
+  if (checking) return null;
 
   return (
     <div className="max-w-xl mx-auto px-6 py-10">
       <h1 className="text-3xl font-bold mb-6 text-center">Upload Foto ke Galeri</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form Inputs */}
         <input
           type="text"
           placeholder="Judul"

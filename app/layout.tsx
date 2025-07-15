@@ -3,8 +3,9 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css"; // Sesuaikan dengan lokasi CSS global Anda
-import ClientNavbar from '@/components/ClientNavbar'; // Pastikan path ini benar
+import ClientNavbar from "@/components/ClientNavbar"; // Pastikan path ini benar
 import { usePathname } from "next/navigation"; // Import usePathname
+import { UserProvider } from "@/context/UserContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,28 +23,22 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const pathname = usePathname(); // Dapatkan jalur URL saat ini
-
-  // Definisikan rute di mana navbar tidak akan ditampilkan
+}) {
+  const pathname = usePathname();
   const noNavbarRoutes = ["/login", "/register"];
-
-  // Tentukan apakah navbar harus ditampilkan
   const showNavbar = !noNavbarRoutes.includes(pathname);
 
   return (
-    // PASTIKAN TAG <html> dan <body> ini ada dan membungkus seluruh konten aplikasi Anda.
-    // Jika error "Missing <html> and <body> tags" masih muncul,
-    // maka ada masalah di sekitar struktur ini di file Anda.
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Render ClientNavbar hanya jika showNavbar adalah true */}
-        {showNavbar && <ClientNavbar />}
-        {children} {/* Ini akan merender konten halaman Anda */}
+        <UserProvider>
+          {showNavbar && <ClientNavbar />}
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

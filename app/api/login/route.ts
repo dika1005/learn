@@ -1,24 +1,24 @@
 // app/api/login/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { compare } from 'bcryptjs'
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { NextRequest, NextResponse } from 'next/server';
+import { compare } from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json()
+    const { email, password } = await req.json();
 
-    const user = await prisma.user.findUnique({ where: { email } })
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user || !user.password) {
-      return NextResponse.json({ message: 'Email tidak ditemukan' }, { status: 404 })
+      return NextResponse.json({ message: 'Email tidak ditemukan' }, { status: 404 });
     }
 
-    const isValid = await compare(password, user.password)
+    const isValid = await compare(password, user.password);
     if (!isValid) {
-      return NextResponse.json({ message: 'Password salah' }, { status: 401 })
+      return NextResponse.json({ message: 'Password salah' }, { status: 401 });
     }
 
     // 🔐 Generate JWT
@@ -26,30 +26,28 @@ export async function POST(req: NextRequest) {
       { id: user.id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: '1h' }
-    )
+    );
 
-    // 🍪 Simpan token ke cookies
+    // 🍪 Set cookie
     const response = NextResponse.json({
       message: 'Login berhasil!',
-      token,
       user: {
         id: user.id,
-        email: user.email
-      }
-    })
+        email: user.email,
+      },
+    });
 
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/',
-      maxAge: 60 * 60 // 1 jam
-    })
+      maxAge: 60 * 60, // 1 jam
+    });
 
-    return response
-
+    return response;
   } catch (error) {
-    console.error('[LOGIN ERROR]', error)
-    return NextResponse.json({ message: 'Terjadi kesalahan server' }, { status: 500 })
+    console.error('[LOGIN ERROR]', error);
+    return NextResponse.json({ message: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }

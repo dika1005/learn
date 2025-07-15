@@ -1,8 +1,9 @@
-// app/auth/login/page.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import api from "@/lib/axios";
+import type { AxiosError } from "axios";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,50 +11,32 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  // Redirect jika sudah login
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("userEmail")) {
-      // Pastikan ini mengarah ke halaman utama Anda, misalnya "/"
-      router.push("/");
-    }
-  }, [router]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email || !password) {
-      // Ganti alert dengan modal kustom jika memungkinkan
       alert("Email dan password harus diisi.");
       return;
     }
 
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await api.post("/login", { email, password });
+      const data = res.data as { message: string };
 
-      const data = await res.json();
+      alert(data.message);
 
-      if (res.ok) {
-        // Ganti alert dengan modal kustom jika memungkinkan
-        alert(data.message);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userEmail", data.user.email);
-        window.dispatchEvent(new Event("userEmailChanged")); // Trigger navbar update
-        // Pastikan ini mengarah ke halaman utama Anda, misalnya "/"
-        router.push("/");
-      } else {
-        // Ganti alert dengan modal kustom jika memungkinkan
-        alert("Gagal login: " + data.message);
-      }
-    } catch (error) {
+      // Cookie httpOnly udah otomatis dikirim
+      // Kamu bisa pakai /api/me untuk dapetin data user dari cookie
+      window.dispatchEvent(new Event("userEmailChanged"));
+      router.push("/");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
       console.error("Login error:", error);
-      // Ganti alert dengan modal kustom jika memungkinkan
-      alert("Terjadi kesalahan jaringan atau server.");
+
+      alert(
+        "Gagal login: " +
+          (error.response?.data?.message || "Terjadi kesalahan.")
+      );
     }
   };
 
@@ -108,7 +91,9 @@ export default function LoginPage() {
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute inset-y-0 right-0 px-4 flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 aria-label={
-                  showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"
+                  showPassword
+                    ? "Sembunyikan kata sandi"
+                    : "Tampilkan kata sandi"
                 }
               >
                 {showPassword ? (

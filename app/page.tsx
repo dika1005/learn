@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -10,7 +9,15 @@ import {
   FiLinkedin,
   FiMail,
 } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+
+
+// Animasi fadeIn
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
+
 
 // Data Proyek (lebih mudah dikelola)
 const projects = [
@@ -32,40 +39,13 @@ const projects = [
   },
 ];
 
+import { useUser } from "@/context/UserContext";
+
 export default function PortfolioPage() {
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const router = useRouter();
+  const { user, loading } = useUser();
 
-  useEffect(() => {
-    // Pastikan kode ini hanya berjalan di sisi klien
-    if (typeof window !== "undefined") {
-      const email = localStorage.getItem("userEmail");
-      const token = localStorage.getItem("token");
-
-      if (email && token) { // Periksa KEDUANYA: email dan token
-        setUserEmail(email);
-      } else {
-        // Jika salah satu (atau keduanya) tidak ada, anggap belum login
-        setUserEmail(null);
-        // Redirect ke halaman login yang benar
-        router.push("/login");
-      }
-    }
-  }, [router]); // Tambahkan router sebagai dependensi
-
-  // Varian animasi untuk Framer Motion
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  };
-
-  // Opsional: Tampilkan loading state atau null jika belum terautentikasi
-  if (userEmail === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
-        Loading...
-      </div>
-    );
+  if (loading || !user) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   return (
