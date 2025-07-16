@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/axios";
 import type { AxiosError } from "axios";
+import { useUser } from "@/context/UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { refreshUser } = useUser();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,9 +27,8 @@ export default function LoginPage() {
 
       alert(data.message);
 
-      // Cookie httpOnly udah otomatis dikirim
-      // Kamu bisa pakai /api/me untuk dapetin data user dari cookie
-      window.dispatchEvent(new Event("userEmailChanged"));
+      // ⬇️ Tambahkan ini untuk update context user tanpa reload!
+      await refreshUser(); // ini yang bikin navbar langsung muncul
       router.push("/");
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;

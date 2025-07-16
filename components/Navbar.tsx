@@ -9,21 +9,42 @@ export default function Navbar() {
   const { user, loading, setUser } = useUser();
   const router = useRouter();
 
-  const handleLogout = () => {
-    api
-      .post("/logout")
-      .then(() => {
-        setUser(null);
-        router.push("/login");
-      })
-      .catch(() => {
-        setUser(null);
-        router.push("/login");
-      });
+  const handleLogout = async () => {
+    try {
+      await api.post("/logout");
+    } catch (e) {
+      console.error("Logout error:", e);
+    } finally {
+      setUser(null);
+      router.push("/login");
+    }
   };
 
-  if (loading || !user) return null;
+  // Sembunyikan navbar kalau masih loading
+  if (loading) return null;
 
+  // Tampilkan minimal login button kalau belum login
+  if (!user) {
+    return (
+      <nav className="bg-white shadow-md px-4 py-5 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link
+            href="/"
+            className="text-xl font-bold text-blue-600 hover:underline ml-20"
+          >
+            DikaRamadani
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/login" className="text-blue-600 hover:underline">
+              Login
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // Tampilkan navbar lengkap kalau sudah login
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md px-4 py-5 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -47,7 +68,7 @@ export default function Navbar() {
             Pendidikan
           </Link>
 
-          {user?.email?.includes("dikaramadan6@gmail.com") && (
+          {user?.email === "dikaramadan6@gmail.com" && (
             <>
               <Link
                 href="/education/add"
