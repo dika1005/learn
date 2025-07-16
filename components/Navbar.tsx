@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link
           href="/"
-          className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline"
+          className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:underline ml-20"
         >
           DikaRamadani
         </Link>
@@ -57,7 +57,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/gallery/upload"
-                className="text-gray-700 border-2 border-red-500 dark:text-gray-200 hover:text-blue-500"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-500"
               >
                 Tambah Foto
               </Link>

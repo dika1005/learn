@@ -10,14 +10,11 @@ import {
   FiMail,
 } from "react-icons/fi";
 
-
 // Animasi fadeIn
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
-
-
 
 // Data Proyek (lebih mudah dikelola)
 const projects = [
@@ -35,19 +32,11 @@ const projects = [
       "Aplikasi e-commerce untuk penjualan sepatu, dibangun menggunakan Laravel dan Tailwind CSS.",
     image: "/project-toko-sepatu.png", // Ganti dengan path gambar proyek Anda
     tags: ["Laravel", "Tailwind CSS", "MySQL"],
-    githubLink: "https://github.com/dika1005/templates_mvc",
+    githubLink: "https://pweb2.dikaramadani.tech/",
   },
 ];
 
-import { useUser } from "@/context/UserContext";
-
 export default function PortfolioPage() {
-  const { user, loading } = useUser();
-
-  if (loading || !user) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans">
       <main className="max-w-5xl mx-auto px-6 py-12 md:py-20">
@@ -67,11 +56,10 @@ export default function PortfolioPage() {
             </p>
             <p className="mt-4 max-w-xl text-gray-600 dark:text-gray-300 leading-relaxed">
               Hallo, Nama saya Dika Ramadani, seorang web developer yang
-              berfokus pada pengembangan aplikasi web modern dan responsif.
-              Saya memiliki pengalaman dalam menggunakan teknologi seperti Next.js,
+              berfokus pada pengembangan aplikasi web modern dan responsif. Saya
+              memiliki pengalaman dalam menggunakan teknologi seperti Next.js,
               React, dan Tailwind CSS untuk menciptakan pengalaman pengguna yang
               menarik dan fungsional.
-              
             </p>
             <div className="mt-8 flex justify-center md:justify-start gap-4">
               <a
@@ -211,7 +199,7 @@ export default function PortfolioPage() {
             >
               <FiMail />
               <span className="text-base font-medium">
-              dikabangkok21@gmail.com
+                dikabangkok21@gmail.com
               </span>
             </a>
             <a

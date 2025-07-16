@@ -18,7 +18,12 @@ export async function PATCH(
   try {
     const updated = await prisma.education.update({
       where: { id },
-      data: { school, major, startYear, endYear },
+      data: {
+        school,
+        major,
+        startYear,
+        endYear: endYear || null,
+      },
     });
 
     return NextResponse.json({
@@ -33,17 +38,24 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } } // <== INI DIA FIX-nya
 ) {
   const auth = await authMiddleware(req);
-  if (auth) return auth;
+  if (auth instanceof NextResponse) return auth;
 
-  const id = context.params.id;
+  const user = auth;
+  const id = params.id;
 
   try {
-    await prisma.education.delete({
-      where: { id },
-    });
+    const existing = await prisma.education.findUnique({ where: { id } });
+    if (!existing || existing.userId !== user.userId) {
+      return NextResponse.json(
+        { message: "Data tidak ditemukan atau bukan milikmu" },
+        { status: 403 }
+      );
+    }
+
+    await prisma.education.delete({ where: { id } });
 
     return NextResponse.json({ message: "Berhasil hapus" });
   } catch (err) {
