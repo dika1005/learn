@@ -16,7 +16,9 @@ export async function POST(request: Request) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { email: string };
 
-    // Hanya admin yang boleh nambahin galeri (ini emailmu kan 😤)
+    if (!decoded || !decoded.email) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 403 });
+    }
     if (decoded.email !== "dikaramadan6@gmail.com") {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }

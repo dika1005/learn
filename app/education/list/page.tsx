@@ -8,10 +8,6 @@ interface Education {
   major: string;
   startYear: number;
   endYear?: number;
-  // Add userId, createdAt, updatedAt if you plan to use them in the client
-  // userId: string
-  // createdAt: string
-  // updatedAt: string
 }
 
 export default function EducationListPage() {
@@ -22,59 +18,38 @@ export default function EducationListPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Add try-catch for better error handling
-        // >>>>>> FIX THIS FETCH URL <<<<<<
-        const res = await fetch("/api/education/list"); // Change from /api/education to /api/education/list
-
+        const res = await fetch("/api/education/list");
         if (!res.ok) {
-          // Handle non-OK responses (e.g., 401, 403, 500)
           const errorData = await res.json();
           console.error("Failed to fetch education list:", errorData);
           setLoading(false);
-          // You might want to redirect to login if it's an auth error
           if (res.status === 401 || res.status === 403) {
-            alert(
-              "Sesi Anda telah berakhir atau tidak valid. Silakan login kembali."
-            );
+            alert("Sesi Anda telah berakhir atau tidak valid. Silakan login kembali.");
             router.push("/login");
           } else {
-            alert(
-              `Gagal memuat data pendidikan: ${
-                errorData.message || res.statusText
-              }`
-            );
+            alert(`Gagal memuat data pendidikan: ${errorData.message || res.statusText}`);
           }
-          return; // Stop execution if response is not OK
+          return;
         }
 
         const json = await res.json();
-        setData(json.data || []); // Assume your API returns { data: [...] }
+        setData(json.data || []);
         setLoading(false);
       } catch (error) {
-        console.error(
-          "Network or parsing error fetching education list:",
-          error
-        );
+        console.error("Network or parsing error fetching education list:", error);
         setLoading(false);
         alert("Terjadi kesalahan jaringan saat memuat daftar pendidikan.");
       }
     };
 
     fetchData();
-  }, []);
+  }, [router]);
 
-  // The handleDelete function also has an incorrect API path:
-  // It's using `/api/education/list/${id}` which is good.
-  // BUT the `authMiddleware` expects tokens in cookies, not `Authorization` header.
-  // So, remove the Authorization header.
   const handleDelete = async (id: string) => {
     if (!confirm("Yakin hapus data ini?")) return;
 
     const res = await fetch(`/api/education/list/${id}`, {
       method: "DELETE",
-      headers: {
-        // Authorization: `Bearer ${token}`, // <<< Sudah dihapus, GOOD!
-      },
     });
 
     if (res.ok) {
@@ -86,50 +61,57 @@ export default function EducationListPage() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Riwayat Pendidikan</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">📚 Riwayat Pendidikan</h1>
 
-      {data.length === 0 && !loading ? (
-        <p>Belum ada data pendidikan.</p>
+      {data.length === 0 ? (
+        <div className="bg-yellow-100 text-yellow-800 p-4 rounded text-center font-medium">
+          Belum ada data pendidikan.
+        </div>
       ) : (
-        <table className="w-full border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2">Sekolah</th>
-              <th className="p-2">Jurusan</th>
-              <th className="p-2">Tahun</th>
-              <th className="p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((edu) => (
-              <tr key={edu.id} className="border-t">
-                <td className="p-2">{edu.school}</td>
-                <td className="p-2">{edu.major}</td>
-                <td className="p-2">
-                  {edu.startYear} - {edu.endYear || "-"}
-                </td>
-                <td className="p-2">
-                  <button
-                    className="text-blue-600 mr-3"
-                    onClick={() => router.push(`/education/edit/${edu.id}`)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600"
-                    onClick={() => handleDelete(edu.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full bg-white shadow-md rounded border border-gray-200">
+            <thead>
+              <tr className="bg-indigo-600 text-white text-left text-sm uppercase tracking-wider">
+                <th className="p-3">Sekolah</th>
+                <th className="p-3">Jurusan</th>
+                <th className="p-3">Tahun</th>
+                <th className="p-3 text-center">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((edu) => (
+                <tr
+                  key={edu.id}
+                  className="border-t hover:bg-indigo-50 transition duration-150"
+                >
+                  <td className="p-3">{edu.school}</td>
+                  <td className="p-3">{edu.major}</td>
+                  <td className="p-3">
+                    {edu.startYear} - {edu.endYear || "-"}
+                  </td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => router.push(`/education/edit/${edu.id}`)}
+                      className="text-indigo-600 hover:text-indigo-900 font-semibold mr-4 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(edu.id)}
+                      className="text-red-600 hover:text-red-800 font-semibold transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

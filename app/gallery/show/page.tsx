@@ -30,53 +30,64 @@ export default function GalleryPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl animate-pulse">Memuat galeri...</p>
+        <p className="text-xl animate-pulse text-gray-600 dark:text-gray-300">
+          Memuat galeri...
+        </p>
       </div>
     );
   }
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold mb-8 text-center">Galeri Pribadi</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-indigo-700 dark:text-indigo-300">
+        🖼️ Galeri Pribadi
+      </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {gallery.map((item) => (
-          <Link key={item.id} href={`/gallery/${item.id}`}>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition overflow-hidden cursor-pointer">
+      {gallery.length === 0 ? (
+        <div className="bg-yellow-100 text-yellow-800 p-4 rounded text-center font-medium">
+          Belum ada foto yang diunggah.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {gallery.map((item) => (
+            <Link key={item.id} href={`/gallery/${item.id}`} className="block">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition duration-200 overflow-hidden border border-gray-200 dark:border-gray-700">
                 <Image
                   src={item.image}
                   alt={item.title}
                   width={600}
                   height={224}
                   className="w-full h-56 object-cover"
-                  style={{ objectFit: "cover" }}
-                  priority={true}
+                  priority
                 />
-              <div className="p-4">
-                <h2 className="text-lg font-semibold">{item.title}</h2>
-                <p className="text-sm text-gray-500 mb-1">
-                  {new Date(item.takenAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
-                  {item.description}
-                </p>
-                {item.tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {item.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 text-xs px-2 py-1 rounded-full"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
+                    {item.title}
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {new Date(item.takenAt).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-1 line-clamp-2">
+                    {item.description}
+                  </p>
+                  {item.tags.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {item.tags.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-indigo-100 text-xs px-2 py-1 rounded-full"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
